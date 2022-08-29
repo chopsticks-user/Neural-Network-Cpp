@@ -11,14 +11,10 @@ using namespace neural_network;
 using namespace neural_network::activation;
 using namespace neural_network::layer;
 
-class up
+template <typename U = float, typename T = int>
+class A
 {
-private:
-    std::unique_ptr<int> ptr_;
-
-public:
-    up() : ptr_(std::make_unique<int>()){};
-    up(const up &other) : ptr_(std::make_unique<int>(*(other.ptr_.get()))){};
+    U aa;
 };
 
 int main()
@@ -26,12 +22,13 @@ int main()
 
     try
     {
+        A a;
         Timer t;
-        Matrix<double, 1, 10> inp;
-        Linear<Default, 10, 16> l1;
-        Linear<Default, 16, 16> l2;
-        Linear<Default, 16, 16> l3;
-        Linear<Default, 16, 2> l4;
+        Matrix<double, 1, 64> inp;
+        Linear<64, 128, Sigmoid<>> l1;
+        Linear<128, 128, ReLU<>> l2;
+        Linear<128, 128, Tanh<>> l3;
+        Linear<128, 16, Softmax<>> l4;
 
         inp.fill_random(1, 10);
         auto l1_out = l1.forward(inp);
@@ -39,7 +36,9 @@ int main()
         auto l3_out = l3.forward(l2_out);
         auto l4_out = l4.forward(l3_out);
 
-        std::cout << l4_out << '\n';
+        std::cout << l4_out << '\n'
+                  << sizeof(l4) << '\n'
+                  << sizeof(l4_out) << '\n';
     }
     catch (const std::exception &e)
     {

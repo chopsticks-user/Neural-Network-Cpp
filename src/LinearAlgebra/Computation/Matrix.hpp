@@ -1,7 +1,7 @@
 #ifndef LINEAR_ALGEBRA_COMPUTATION_MATRIX_HPP
 #define LINEAR_ALGEBRA_COMPUTATION_MATRIX_HPP
 
-#include "../Utility/Utility.hpp"
+#include "../../Utility/Utility.hpp"
 
 #include <math.h>
 

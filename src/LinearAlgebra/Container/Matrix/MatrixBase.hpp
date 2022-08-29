@@ -4,8 +4,8 @@
 #include "../../Config.hpp"
 
 #include "MatrixUtil.hpp"
-#include "../../Algorithm/Algorithm.hpp"
-#include "../../Utility/Utility.hpp"
+#include "../../../Algorithm/Algorithm.hpp"
+#include "../../../Utility/Utility.hpp"
 
 #include <vector>
 #include <array>
@@ -152,7 +152,6 @@ namespace zz_no_inc
                               "Copy to a static matrix: Dimensions mismatch.");
 
             set_dimensions_();
-            std::cout << templ_col_size << " " << rhs_col_size << " \n";
             if (rhs_matrix.n_rows__ != templ_col_size ||
                 rhs_matrix.n_cols__ != matrix::verified_matrix_row_size(templ_col_size, templ_row_size))
                 throw std::runtime_error("Copy to a static matrix: Dimensions mismatch.");
