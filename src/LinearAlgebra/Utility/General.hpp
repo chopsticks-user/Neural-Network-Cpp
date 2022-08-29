@@ -54,12 +54,30 @@ namespace utility
         }
     };
 
-    long long rand(long long min, long long max)
+    // int rand(int min, int max)
+    // {
+    //     std::random_device rd;
+    //     std::mt19937 rng(rd());
+    //     std::uniform_int_distribution<int> dist(min, max);
+    //     return dist(rng);
+    // }
+
+    double rand(double min, double max)
     {
         std::random_device rd;
-        std::mt19937 rng(rd());
-        std::uniform_int_distribution<long long> dist(min, max);
-        return dist(rng);
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> dis(min, max);
+        return dis(gen);
+    }
+
+    template <typename ItTp>
+    void rand(double min, double max, ItTp it_begin, ItTp it_end)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> dis(min, max);
+        while (it_begin != it_end)
+            *(it_begin++) = dis(gen);
     }
 
     template <typename T>

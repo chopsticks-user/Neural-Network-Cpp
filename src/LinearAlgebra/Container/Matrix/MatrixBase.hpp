@@ -28,13 +28,13 @@ namespace zz_no_inc
         template <typename ReturnType>
         using DynamicMatrixMethod = typename std::enable_if_t<
             matrix::is_declared_dynamic_matrix<templ_col_size,
-                                                templ_row_size>{},
+                                               templ_row_size>{},
             ReturnType>;
 
         template <typename ReturnType>
         using StaticMatrixMethod = typename std::enable_if_t<
             matrix::is_declared_static_matrix<templ_col_size,
-                                               templ_row_size>{},
+                                              templ_row_size>{},
             ReturnType>;
 
         /**
@@ -48,13 +48,13 @@ namespace zz_no_inc
         constexpr bool is_dynamic_()
         {
             return matrix::is_declared_dynamic_matrix<templ_col_size,
-                                                       templ_row_size>{};
+                                                      templ_row_size>{};
         }
 
         constexpr bool is_static_()
         {
             return matrix::is_declared_static_matrix<templ_col_size,
-                                                      templ_row_size>{};
+                                                     templ_row_size>{};
         }
 
         const SizeType &get_col_size_() const noexcept { return n_rows__; }
@@ -152,6 +152,7 @@ namespace zz_no_inc
                               "Copy to a static matrix: Dimensions mismatch.");
 
             set_dimensions_();
+            std::cout << templ_col_size << " " << rhs_col_size << " \n";
             if (rhs_matrix.n_rows__ != templ_col_size ||
                 rhs_matrix.n_cols__ != matrix::verified_matrix_row_size(templ_col_size, templ_row_size))
                 throw std::runtime_error("Copy to a static matrix: Dimensions mismatch.");
@@ -222,7 +223,7 @@ namespace zz_no_inc
         {
             DataContainerType cloned_data;
             if constexpr (matrix::is_declared_dynamic_matrix<templ_col_size,
-                                                              templ_row_size>{})
+                                                             templ_row_size>{})
                 cloned_data.resize(n_rows__ * n_cols__);
             std::copy(data__.begin(), data__.end(), cloned_data.begin());
             return cloned_data;

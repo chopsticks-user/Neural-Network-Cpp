@@ -45,6 +45,11 @@ namespace linear_algebra
             MatTp;
 
     public:
+        auto copy_data() const
+        {
+            return *(this->mat_ptr_.get());
+        }
+
         const auto &data() const
         {
             return *(this->mat_ptr_);
@@ -76,12 +81,12 @@ namespace linear_algebra
                         const UnitTp &fill_val = UnitTp())
             : mat_ptr_(std::make_unique<MatTp>(n_rows, n_cols, fill_val)){};
 
-        Matrix(Matrix &r_mat)
-            : mat_ptr_(std::make_unique<MatTp>(r_mat.data())){};
+        Matrix(const Matrix &r_mat)
+            : mat_ptr_(std::make_unique<MatTp>(std::move(r_mat.copy_data()))){};
 
         template <typename RUnitTp, SizeTp r_col_h, SizeTp r_row_w>
-        Matrix(Matrix<RUnitTp, r_col_h, r_row_w> &r_mat)
-            : mat_ptr_(std::make_unique<MatTp>(r_mat.data())){};
+        Matrix(const Matrix<RUnitTp, r_col_h, r_row_w> &r_mat)
+            : mat_ptr_(std::make_unique<MatTp>(r_mat.copy_data())){};
 
         Matrix(Matrix &&r_mat) = default;
 
@@ -89,16 +94,16 @@ namespace linear_algebra
         Matrix(Matrix<RUnitTp, r_col_h, r_row_w> &&r_mat)
             : mat_ptr_(std::make_unique<MatTp>(std::move(r_mat.data()))){};
 
-        Matrix &operator=(Matrix &r_mat)
+        Matrix &operator=(const Matrix &r_mat)
         {
-            this->mat_ptr_ = std::make_unique<MatTp>(r_mat.data());
+            this->mat_ptr_ = std::make_unique<MatTp>(r_mat.copy_data());
             return *this;
         }
 
         template <typename RUnitTp, SizeTp r_col_h, SizeTp r_row_w>
-        Matrix &operator=(Matrix<RUnitTp, r_col_h, r_row_w> &r_mat)
+        Matrix &operator=(const Matrix<RUnitTp, r_col_h, r_row_w> &r_mat)
         {
-            this->mat_ptr_ = std::make_unique<MatTp>(r_mat.data());
+            this->mat_ptr_ = std::make_unique<MatTp>(r_mat.copy_data());
             return *this;
         }
 
@@ -210,6 +215,12 @@ namespace linear_algebra
             return *this;
         }
 
+        Matrix& fill_random(UnitTp min, UnitTp max)
+        {
+            utility::rand(min, max, this->begin(), this->end());
+            return *this;
+        }
+
         Matrix &fill_row(SizeTp row_idx, const UnitTp &fill_val)
         {
             row_idx = this->valid_row_index_(row_idx);
@@ -289,7 +300,7 @@ namespace linear_algebra
 #if ENABLE_MATRIX_MATH_FUNCTIONS
         /// UnitTp must have a defined operator+
         template <typename RMatTp>
-        Matrix operator+(const RMatTp &r_mat)
+        Matrix<UnitTp> operator+(const RMatTp &r_mat) const
         {
             const SizeTp r_col_h = r_mat.column_size();
             const SizeTp r_row_w = r_mat.row_size();
@@ -304,7 +315,7 @@ namespace linear_algebra
 
         /// UnitTp must have a defined operator-
         template <typename RMatTp>
-        Matrix operator-(const RMatTp &r_mat)
+        Matrix<UnitTp> operator-(const RMatTp &r_mat) const
         {
             const SizeTp r_col_h = r_mat.column_size();
             const SizeTp r_row_w = r_mat.row_size();
@@ -319,7 +330,7 @@ namespace linear_algebra
 
         /// UnitTp must have a defined operator*
         template <typename RMatTp>
-        Matrix operator*(const RMatTp &r_mat)
+        Matrix<UnitTp> operator*(const RMatTp &r_mat) const
         {
             const SizeTp col_h = this->column_size();
             const SizeTp r_col_h = r_mat.column_size();
@@ -348,7 +359,7 @@ namespace linear_algebra
         /// UnitTp must have a defined operator*
         /// Old implementation: Time elapsed: 242,902 μs
         /// New implementation: Time elapsed: 217,647 μs
-        Matrix operator*(const UnitTp &scalar)
+        Matrix<UnitTp> operator*(const UnitTp &scalar) const
         {
 
             static_assert(std::is_arithmetic_v<UnitTp>,
