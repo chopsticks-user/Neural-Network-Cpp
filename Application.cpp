@@ -1,8 +1,15 @@
-#include "src/LinearAlgebra/LinearAlgebra.hpp"
+// #include "src/LinearAlgebra/LinearAlgebra.hpp"
+#include "src/NeuralNetwork/NeuralNetwork.hpp"
 
-using namespace linear_algebra;
+#include <typeinfo>
+
 using utility::MatrixIt;
 using utility::Timer;
+
+using namespace linear_algebra;
+using namespace neural_network;
+using namespace neural_network::activation;
+using namespace neural_network::layer;
 
 int main()
 {
@@ -10,8 +17,8 @@ int main()
     try
     {
         Timer t;
-        Matrix<double> m1(100, 100);
-        m1*m1;
+        Linear<Default, 16, 16> input_layer;
+        std::cout << sizeof(input_layer) << '\n';
     }
     catch (const std::exception &e)
     {
