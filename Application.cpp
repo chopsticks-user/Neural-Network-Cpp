@@ -2,6 +2,8 @@
 #include "src/NeuralNetwork/NeuralNetwork.hpp"
 
 #include <typeinfo>
+#include <chrono>
+#include <thread>
 
 using utility::MatrixIt;
 using utility::Timer;
@@ -11,34 +13,42 @@ using namespace neural_network;
 using namespace neural_network::activation;
 using namespace neural_network::layer;
 
-template <typename U = float, typename T = int>
-class A
+class NeuralNet
 {
-    U aa;
+public:
+    Matrix<double, 1, 10> forward(Matrix<double, 1, 16> input)
+    {
+        auto l1_out = l1_.forward(input);
+        auto l2_out = l2_.forward(l1_out);
+        auto l3_out = l3_.forward(l2_out);
+        return l4_.forward(l3_out);
+    }
+
+    void backward()
+    {
+    }
+
+protected:
+    Linear<16, 256, Sigmoid<>> l1_;
+    Linear<256, 256, ReLU<>> l2_;
+    Linear<256, 256, Sigmoid<>> l3_;
+    Linear<256, 10> l4_;
 };
 
 int main()
 {
-
     try
     {
-        A a;
+        NeuralNet nn1;
         Timer t;
-        Matrix<double, 1, 64> inp;
-        Linear<64, 128, Sigmoid<>> l1;
-        Linear<128, 128, ReLU<>> l2;
-        Linear<128, 128, Tanh<>> l3;
-        Linear<128, 16, Softmax<>> l4;
 
-        inp.fill_random(1, 10);
-        auto l1_out = l1.forward(inp);
-        auto l2_out = l2.forward(l1_out);
-        auto l3_out = l3.forward(l2_out);
-        auto l4_out = l4.forward(l3_out);
-
-        std::cout << l4_out << '\n'
-                  << sizeof(l4) << '\n'
-                  << sizeof(l4_out) << '\n';
+        while (1)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            Timer t1;
+            std::cout << nn1.forward(Matrix<double, 1, 16>().fill_random(1, 10)) << '\n';
+            std::cout << sizeof(nn1) << '\n';
+        }
     }
     catch (const std::exception &e)
     {
