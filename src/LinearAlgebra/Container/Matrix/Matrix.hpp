@@ -724,46 +724,4 @@ namespace linear_algebra
     };
 }
 
-// /// use move it_begin, it_end
-// template <typename RUnitTp,
-//           SizeType r_row_w,
-//           SizeType r_col_h>
-// Matrix(Matrix<RUnitTp, r_row_w, r_col_h> &&r_mat)
-//     : mat_ptr_(std::make_unique<MatTp>(
-//           std::move(*(r_mat.clone_data()))))
-// {
-//     if constexpr (utility::is_declared_static_matrix<tpl_row_w, tpl_col_h>{})
-//     {
-//         if constexpr (utility::is_declared_static_matrix<r_row_w, r_col_h>{})
-//             static_assert("Matrix dimensions mismatch.");
-//         else if (tpl_row_w != r_mat.row_size() ||
-//                  tpl_col_h != r_mat.column_size())
-//             throw std::range_error("Matrix dimensions mismatch.");
-//         else
-//         {
-//             this->mat_ptr_ = std::make_unique<MatTp>();
-//             std::move(r_mat.begin(), r_mat.end(), this->begin());
-//         }
-//     }
-// }
-
-// template <typename CastUnitTp,
-//           SizeType cast_row_size,
-//           SizeType cast_col_size>
-// operator MatrixBase_<CastUnitTp,
-//                      cast_row_size,
-//                      cast_col_size>() const
-// {
-//     if constexpr (utility::check_if_static_matrix<tpl_row_w, tpl_col_h>())
-//     {
-//         if constexpr (utility::check_if_static_matrix<cast_row_size, cast_col_size>())
-//         {
-//             static_assert(zz_no_inc::matrix::check_if_equal_dimensions<tpl_row_w, tpl_col_h, cast_row_size, cast_col_size>(),
-//                           "Invalid cast, dimensions mismatch.");
-//             return MatrixBase_<CastUnitTp, cast_row_size, cast_col_size> = this;
-//         }
-//         return MatrixBase_<CastUnitTp> = this;
-//     }
-// }
-
 #endif /* LIN_ALG_CONTAINER_MATRIX_HPP */

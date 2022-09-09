@@ -1,6 +1,6 @@
 #ifndef NEURAL_NETWORK_LAYER_HPP
 #define NEURAL_NETWORK_LAYER_HPP
 
-
+#include "Linear.hpp"
 
 #endif /* NEURAL_NETWORK_LAYER_HPP */
