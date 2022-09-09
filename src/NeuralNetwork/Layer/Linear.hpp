@@ -35,21 +35,24 @@ namespace neural_network
 
                 // The result of the operations will be passed as an rvalue 
                 // to the forward function by the compiler.
-                return Func::forward(this->weight_ * x + this->bias_);
+                this->last_outp_ = Func::forward(this->weight_ * x + this->bias_);
+                return this->last_outp_;
             }
 
-            // InputTp backward(const OutputTp &grad, double learning_rate)
-            // {
-            //     auto w_grad = last_inp_.transpose() * grad;
-            //     this->weight_ = this->weight_ - w_grad * learning_rate;
-            //     this->bias_ = this->bias_ - grad * learning_rate;
-            //     return this->weight_ * grad.transpose();
-            // }
+            InputTp backward(const OutputTp &grad, double learning_rate)
+            {
+                auto f_grad = Func::backward(grad, this->last_outp_);
+                auto w_grad = f_grad * this->last_inp_.transpose();
+                this->weight_ = this->weight_ - w_grad * learning_rate;
+                this->bias_ = this->bias_ - f_grad * learning_rate;
+                return this->weight_.transpose() * f_grad;
+            }
 
         protected:
             WeightTp weight_;
             OutputTp bias_;
             InputTp last_inp_;
+            OutputTp last_outp_;
         };
     }
 }

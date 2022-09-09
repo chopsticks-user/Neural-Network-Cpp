@@ -14,8 +14,8 @@ using namespace neural_network::layer;
 
 class NeuralNet
 {
-    typedef linear_algebra::Matrix<double, 4, 1> OutputTp;
-    typedef linear_algebra::Matrix<double, 8, 1> InputTp;
+    typedef linear_algebra::Matrix<double, 1, 1> OutputTp;
+    typedef linear_algebra::Matrix<double, 1, 1> InputTp;
 
 public:
     OutputTp forward(const InputTp &x)
@@ -27,17 +27,23 @@ public:
         return this->last_pred_;
     }
 
-    void backward(const OutputTp& target)
+    void backward(const OutputTp &target)
     {
-        Timer t1;
-        auto grad = MSE<4>::grad(this->last_pred_, target);
+        double alpha = 0.1;
+        auto grad = MSE<1>::grad(target, this->last_pred_);
+        std::cout << "Loss:\n"
+                  << MSE<1>::loss(target, this->last_pred_) << '\n';
+        auto l4_grad = this->l4_.backward(grad, alpha);
+        auto l3_grad = this->l3_.backward(l4_grad, alpha);
+        auto l2_grad = this->l2_.backward(l3_grad, alpha);
+        this->l1_.backward(l2_grad, alpha);
     }
 
 private:
-    Linear<8, 16, ReLU<>> l1_;
-    Linear<16, 16> l2_;
-    Linear<16, 16> l3_;
-    Linear<16, 4, ReLU<>> l4_;
+    Linear<1, 16, ReLU<>> l1_;
+    Linear<16, 16, ReLU<>> l2_;
+    Linear<16, 16, ReLU<>> l3_;
+    Linear<16, 1> l4_;
     OutputTp last_pred_;
 };
 
@@ -47,11 +53,18 @@ int main()
     {
         {
             NeuralNet nn1;
-            Timer t1;
-
             std::cout << "NN Size = " << sizeof(nn1) << '\n';
-            std::cout << nn1.forward(Matrix<double, 8, 1>().fill_random(1, 10)) << '\n';
-            nn1.backward(Matrix<double, 4, 1>(0));
+
+            Timer t1;
+            while (true)
+            {
+                auto input = Matrix<double, 1, 1>().fill_random(1, 100);
+                std::cout << "Input:\n"
+                          << input << '\n';
+                std::cout << "Predicted:\n"
+                          << nn1.forward(input) << '\n';
+                nn1.backward(input);
+            }
         }
     }
     catch (const std::exception &e)

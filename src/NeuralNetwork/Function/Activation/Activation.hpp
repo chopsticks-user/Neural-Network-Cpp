@@ -19,7 +19,7 @@ namespace neural_network
             static Tp forward(Tp x) { return x; }
 
             template <typename Tp>
-            static Tp backward(Tp x) { return x; }
+            static Tp backward(Tp x, const Tp &last_inp) { return x; }
         };
 
         template <typename NextFunc = Identity>
@@ -38,20 +38,19 @@ namespace neural_network
                 return NextFunc::forward(std::move(x));
             }
 
-            template <typename Tp>
-            static Tp backward(Tp x)
+            template <typename GradTp>
+            static GradTp backward(GradTp grad, const GradTp &last_inp)
             {
-                auto g = NextFunc::backward(x);
-                auto g_it = std::begin(g);
-                auto x_it = std::begin(x);
+                // std::cout << grad << '\n';
+                grad = NextFunc::backward(std::move(grad), last_inp);
+                auto li_it = std::begin(last_inp);
+                auto g_it = std::begin(grad);
+                auto g_it_end = std::end(grad);
 
-                // while(res_it != res_it_end)
-                // {
-                //     // if (*(li_it) == 0)
-                //     //     throw std::runtime_error("Undefined gradient.");
-                //     *(li_it)>=0?
-                // }
-                return g;
+                while (g_it != g_it_end)
+                    *g_it > 0 ? *(g_it++) = 1 : *(g_it++) = 0;
+                // std::cout << grad << '\n';
+                return grad;
             }
         };
 

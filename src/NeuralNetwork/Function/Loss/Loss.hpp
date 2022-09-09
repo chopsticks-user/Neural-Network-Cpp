@@ -22,11 +22,11 @@ namespace neural_network
         {
             typedef typename LossBase<GradSize>::GradTp GradTp;
 
-            static GradTp loss(const GradTp& target, const GradTp& pred)
+            static GradTp loss(const GradTp &target, const GradTp &pred)
             {
                 GradTp l;
-                const auto* t_it = std::begin(target);
-                const auto* p_it = std::begin(pred);
+                const auto *t_it = std::begin(target);
+                const auto *p_it = std::begin(pred);
                 auto l_it = std::begin(l);
                 auto l_it_end = std::end(l);
                 while (l_it != l_it_end)
@@ -34,11 +34,11 @@ namespace neural_network
                 return l;
             }
 
-            static GradTp grad(const GradTp& target, const GradTp& pred)
+            static GradTp grad(const GradTp &target, const GradTp &pred)
             {
                 GradTp g;
-                const auto* t_it = std::begin(target);
-                const auto* p_it = std::begin(pred);
+                const auto *t_it = std::begin(target);
+                const auto *p_it = std::begin(pred);
                 auto g_it = std::begin(g);
                 auto g_it_end = std::end(g);
                 while (g_it != g_it_end)

@@ -23,7 +23,7 @@ namespace neural_network
             template <typename... T>
             void fill_random(T &...params)
             {
-                (params.fill_random(-1.0, 1.0), ...);
+                (params.fill_random(-0.1, 0.1), ...);
             }
 
         private:
