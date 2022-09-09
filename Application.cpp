@@ -31,15 +31,26 @@ public:
     {
         double alpha = 0.1;
         auto grad = MSE<1>::grad(target, this->last_pred_);
-        std::cout << "Loss:\n"
-                  << MSE<1>::loss(target, this->last_pred_) << '\n';
+        auto loss = MSE<1>::loss(target, this->last_pred_);
+        this->loss = this->loss_value(std::begin(loss), std::end(loss));
         auto l4_grad = this->l4_.backward(grad, alpha);
         auto l3_grad = this->l3_.backward(l4_grad, alpha);
         auto l2_grad = this->l2_.backward(l3_grad, alpha);
         this->l1_.backward(l2_grad, alpha);
     }
 
+    double loss;
+
 private:
+    template <typename ItTp>
+    double loss_value(ItTp it_begin, ItTp it_end)
+    {
+        double res = 0.0;
+        while (it_begin != it_end)
+            res += pow(*(it_begin++), 2);
+        return sqrt(res);
+    }
+
     Linear<1, 16, ReLU<>> l1_;
     Linear<16, 16, ReLU<>> l2_;
     Linear<16, 16, ReLU<>> l3_;
@@ -56,7 +67,8 @@ int main()
             std::cout << "NN Size = " << sizeof(nn1) << '\n';
 
             Timer t1;
-            while (true)
+            double ave_loss = 0.0;
+            for (int i = 0;; i++)
             {
                 auto input = Matrix<double, 1, 1>().fill_random(1, 100);
                 std::cout << "Input:\n"
@@ -64,6 +76,12 @@ int main()
                 std::cout << "Predicted:\n"
                           << nn1.forward(input) << '\n';
                 nn1.backward(input);
+                ave_loss += nn1.loss;
+                if (i % 10000 == 0)
+                {
+                    std::cout << "Average Loss = " << ave_loss / 10000 << '\n';
+                    ave_loss = 0.0;
+                }
             }
         }
     }

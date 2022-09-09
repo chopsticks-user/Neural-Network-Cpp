@@ -41,15 +41,20 @@ namespace neural_network
             template <typename GradTp>
             static GradTp backward(GradTp grad, const GradTp &last_inp)
             {
-                // std::cout << grad << '\n';
                 grad = NextFunc::backward(std::move(grad), last_inp);
                 auto li_it = std::begin(last_inp);
                 auto g_it = std::begin(grad);
                 auto g_it_end = std::end(grad);
 
                 while (g_it != g_it_end)
-                    *g_it > 0 ? *(g_it++) = 1 : *(g_it++) = 0;
-                // std::cout << grad << '\n';
+                {
+                    if (*g_it > 0)
+                        *g_it = *li_it;
+                    else
+                        *g_it = 0;
+                    g_it++;
+                    li_it++;
+                }
                 return grad;
             }
         };
