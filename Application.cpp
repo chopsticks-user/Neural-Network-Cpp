@@ -77,7 +77,7 @@ int main()
                           << nn1.forward(input) << '\n';
                 nn1.backward(input);
                 ave_loss += nn1.loss;
-                if (i % 10000 == 0)
+                if (i % 100000 == 0)
                 {
                     std::cout << "Average Loss = " << ave_loss / 10000 << '\n';
                     ave_loss = 0.0;
